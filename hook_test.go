@@ -12,8 +12,13 @@ import (
 	"github.com/globalsign/mgo/bson"
 )
 
+const (
+	mgoURL = "mongodb://travis:test@127.0.0.1:27017/admin"
+	dbName = "mydb_test"
+)
+
 func TestHook(t *testing.T) {
-	sess, err := mgo.Dial("192.168.33.90:27017")
+	sess, err := mgo.Dial(mgoURL)
 	if err != nil {
 		t.Error(err)
 		return
@@ -28,9 +33,7 @@ func TestHook(t *testing.T) {
 		return entry
 	}
 
-	dbName := "test"
 	cName := "t_log"
-
 	hook := mongohook.Default(sess, dbName, cName,
 		mongohook.SetExtra(map[string]interface{}{"foo": "bar"}),
 		mongohook.SetFilter(filter),
@@ -75,14 +78,13 @@ func TestHook(t *testing.T) {
 }
 
 func ExampleHook() {
-	sess, err := mgo.Dial("192.168.33.90:27017")
+	sess, err := mgo.Dial(mgoURL)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer sess.Close()
 
-	dbName := "test"
 	cName := "e_log"
 	hook := mongohook.Default(sess, dbName, cName)
 	defer sess.DB(dbName).C(cName).DropCollection()

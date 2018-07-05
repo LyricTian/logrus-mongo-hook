@@ -1,6 +1,6 @@
 # An asynchronous MongoDB Hook for [Logrus](https://github.com/sirupsen/logrus)
 
-[![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
+[![Build][Build-Status-Image]][Build-Status-Url] [![Codecov][codecov-image]][codecov-url] [![ReportCard][reportcard-image]][reportcard-url] [![GoDoc][godoc-image]][godoc-url] [![License][license-image]][license-url]
 
 ## Quick Start
 
@@ -38,9 +38,13 @@ func main() {
 
     Copyright (c) 2018 Lyric
 
-[reportcard-url]: https://goreportcard.com/report/github.com/LyricTian/logrus-mysql-hook
-[reportcard-image]: https://goreportcard.com/badge/github.com/LyricTian/logrus-mysql-hook
-[godoc-url]: https://godoc.org/github.com/LyricTian/logrus-mysql-hook
-[godoc-image]: https://godoc.org/github.com/LyricTian/logrus-mysql-hook?status.svg
+[Build-Status-Url]: https://travis-ci.org/LyricTian/logrus-mongo-hook
+[Build-Status-Image]: https://travis-ci.org/LyricTian/logrus-mongo-hook.svg?branch=master
+[codecov-url]: https://codecov.io/gh/LyricTian/logrus-mongo-hook
+[codecov-image]: https://codecov.io/gh/LyricTian/logrus-mongo-hook/branch/master/graph/badge.svg
+[reportcard-url]: https://goreportcard.com/report/github.com/LyricTian/logrus-mongo-hook
+[reportcard-image]: https://goreportcard.com/badge/github.com/LyricTian/logrus-mongo-hook
+[godoc-url]: https://godoc.org/github.com/LyricTian/logrus-mongo-hook
+[godoc-image]: https://godoc.org/github.com/LyricTian/logrus-mongo-hook?status.svg
 [license-url]: http://opensource.org/licenses/MIT
 [license-image]: https://img.shields.io/npm/l/express.svg
