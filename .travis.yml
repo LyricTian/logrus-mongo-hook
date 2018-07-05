@@ -6,7 +6,6 @@ go:
 services:
   - mongodb
 before_install:
-  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
   - go get -t -v ./...
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic

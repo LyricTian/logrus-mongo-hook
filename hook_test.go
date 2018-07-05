@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	mgoURL = "mongodb://travis:test@127.0.0.1:27017/admin"
+	mgoURL = "127.0.0.1:27017"
 	dbName = "mydb_test"
 )
 
