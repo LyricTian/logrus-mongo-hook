@@ -1,9 +1,9 @@
 package mongohook
 
 import (
-	"github.com/Sirupsen/logrus"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/sirupsen/logrus"
 )
 
 // Execer write the logrus entry to the database

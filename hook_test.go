@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/LyricTian/logrus-mongo-hook"
-	"github.com/Sirupsen/logrus"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/sirupsen/logrus"
 )
 
 const (

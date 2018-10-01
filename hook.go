@@ -5,8 +5,8 @@ import (
 	"sync"
 
 	"github.com/LyricTian/queue"
-	"github.com/Sirupsen/logrus"
 	"github.com/globalsign/mgo"
+	"github.com/sirupsen/logrus"
 )
 
 var defaultOptions = options{
