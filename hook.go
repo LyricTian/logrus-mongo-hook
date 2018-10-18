@@ -2,6 +2,7 @@ package mongohook
 
 import (
 	"io"
+	"os"
 	"sync"
 
 	"github.com/LyricTian/queue"
@@ -19,6 +20,7 @@ var defaultOptions = options{
 		logrus.InfoLevel,
 		logrus.DebugLevel,
 	},
+	out: os.Stderr,
 }
 
 // FilterHandle a filter handler
@@ -28,7 +30,7 @@ type options struct {
 	maxQueues  int
 	maxWorkers int
 	extra      map[string]interface{}
-	exec       Execer
+	exec       ExecCloser
 	filter     FilterHandle
 	levels     []logrus.Level
 	out        io.Writer
@@ -56,7 +58,7 @@ func SetExtra(extra map[string]interface{}) Option {
 }
 
 // SetExec set the Execer interface
-func SetExec(exec Execer) Option {
+func SetExec(exec ExecCloser) Option {
 	return func(o *options) {
 		o.exec = exec
 	}
@@ -94,6 +96,14 @@ func Default(sess *mgo.Session, dbName, cName string, opts ...Option) *Hook {
 	var options []Option
 	options = append(options, opts...)
 	options = append(options, SetExec(NewExec(sess, dbName, cName)))
+	return New(options...)
+}
+
+// DefaultWithURL create a default mongo hook
+func DefaultWithURL(url, dbName, cName string, opts ...Option) *Hook {
+	var options []Option
+	options = append(options, opts...)
+	options = append(options, SetExec(NewExecWithURL(url, dbName, cName)))
 	return New(options...)
 }
 
@@ -150,4 +160,5 @@ func (h *Hook) Fire(entry *logrus.Entry) error {
 // Flush waits for the log queue to be empty
 func (h *Hook) Flush() {
 	h.q.Terminate()
+	h.opts.exec.Close()
 }

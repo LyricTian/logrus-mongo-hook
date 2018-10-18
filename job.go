@@ -10,7 +10,7 @@ import (
 type job struct {
 	out    io.Writer
 	entry  *logrus.Entry
-	exec   Execer
+	exec   ExecCloser
 	extra  map[string]interface{}
 	filter FilterHandle
 }
@@ -42,6 +42,6 @@ func (j *job) Job() {
 
 	err := j.exec.Exec(j.entry)
 	if err != nil && j.out != nil {
-		fmt.Fprintf(j.out, "[Mongo-Hook] Execution error:%v", err)
+		fmt.Fprintf(j.out, "[Mongo-Hook] Execution error: %s", err.Error())
 	}
 }
