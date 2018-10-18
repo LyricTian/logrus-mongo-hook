@@ -17,16 +17,11 @@ package main
 
 import (
     "github.com/LyricTian/logrus-mongo-hook"
-    "github.com/globalsign/mgo"
+    "github.com/sirupsen/logrus"
 )
 
 func main() {
-    session, err := mgo.Dial(url)
-    if err != nil {
-        // ...
-    }
-
-    hook := mongohook.Default(session,"test","t_log")
+    hook := mongohook.DefaultWithURL("127.0.0.1:27017","test","t_log")
     defer hook.Flush()
 
     log := logrus.New()
