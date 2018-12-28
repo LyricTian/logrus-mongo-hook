@@ -1,9 +1,9 @@
 package mongohook
 
 import (
+	"fmt"
 	"io"
 	"os"
-	"sync"
 
 	"github.com/LyricTian/queue"
 	"github.com/globalsign/mgo"
@@ -11,7 +11,7 @@ import (
 )
 
 var defaultOptions = options{
-	maxQueues:  128,
+	maxQueues:  512,
 	maxWorkers: 2,
 	levels: []logrus.Level{
 		logrus.FatalLevel,
@@ -124,16 +124,6 @@ func New(opt ...Option) *Hook {
 	return &Hook{
 		opts: opts,
 		q:    q,
-		pool: sync.Pool{
-			New: func() interface{} {
-				return &job{
-					out:    opts.out,
-					extra:  opts.extra,
-					exec:   opts.exec,
-					filter: opts.filter,
-				}
-			},
-		},
 	}
 }
 
@@ -141,7 +131,6 @@ func New(opt ...Option) *Hook {
 type Hook struct {
 	opts options
 	q    *queue.Queue
-	pool sync.Pool
 }
 
 // Levels returns the available logging levels
@@ -151,11 +140,42 @@ func (h *Hook) Levels() []logrus.Level {
 
 // Fire is called when a log event is fired
 func (h *Hook) Fire(entry *logrus.Entry) error {
-	job := &*(h.pool.Get().(*job))
-	job.Reset(entry)
-	h.q.Push(job)
-	h.pool.Put(job)
+	entry = h.copyEntry(entry)
+	h.q.Push(queue.NewJob(entry, func(v interface{}) {
+		h.exec(v.(*logrus.Entry))
+	}))
 	return nil
+}
+
+func (h *Hook) copyEntry(e *logrus.Entry) *logrus.Entry {
+	entry := logrus.NewEntry(e.Logger)
+	entry.Data = make(logrus.Fields)
+	entry.Time = e.Time
+	entry.Level = e.Level
+	entry.Message = e.Message
+	for k, v := range e.Data {
+		entry.Data[k] = v
+	}
+	return entry
+}
+
+func (h *Hook) exec(entry *logrus.Entry) {
+	if extra := h.opts.extra; extra != nil {
+		for k, v := range extra {
+			if _, ok := entry.Data[k]; !ok {
+				entry.Data[k] = v
+			}
+		}
+	}
+
+	if filter := h.opts.filter; filter != nil {
+		entry = filter(entry)
+	}
+
+	err := h.opts.exec.Exec(entry)
+	if err != nil && h.opts.out != nil {
+		fmt.Fprintf(h.opts.out, "[Mongo-Hook] Execution error: %s", err.Error())
+	}
 }
 
 // Flush waits for the log queue to be empty
